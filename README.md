@@ -4,7 +4,7 @@
 
 # RhythmSharp
 
-![](https://github.com/rwdkor/RhythmSharp/blob/main/Images/RhythmSharpLogo.png?raw=true)
+![](https://github.com/rwdkor/RhythmSharp/blob/master/Images/RhythmSharpLogo.png?raw=true)
 
 
 | If you like my project and if it helped you in any way, consider buying me a cup of coffee! | [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Patreon_wordmark.svg/1280px-Patreon_wordmark.svg.png" width="250">](https://www.patreon.com/rwdkor) [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M0209NY)
@@ -21,7 +21,7 @@ R# provides many features like auto-playing bot with humanizer, tasks, scheduler
 
 ## Thanks to
 - [@fs-c](https://github.com/fs-c) for his [bot logics](https://github.com/rwdkor/RhythmSharp#check-notes-hit-timing)
-- [@andy1279](https://github.com/andy1279) the main developer in this project
+- [@andy1279](https://github.com/andy1279) the master developer in this project
 - [@NotActualHuman](https://github.com/NotActualHuman) reported/fixed many bugs
 - [ddxoft](http://www.ddxoft.com/) - DD94687.32.dll library
 - and everyone who support me/this project
@@ -107,14 +107,14 @@ Some investigation reveals that it is possible to determine the timing of the no
 
 Once we have the timing of the notes, we need to know the time of the game to hit it. In-game beatmap editor provides the exact time, so we will use this to get the time offset.
 
-![](https://github.com/rwdkor/RhythmSharp/blob/main/Images/Screenshot02.png?raw=true)
+![](https://github.com/rwdkor/RhythmSharp/blob/master/Images/Screenshot02.png?raw=true)
 
 
 #### [](https://github.com/rwdkor/RhythmSharp#selecting-the-beatmap)Selecting the beatmap
 
 The game provides  [search system](https://osu.ppy.sh/help/wiki/Interface#search), so we will use this to select beatmap. 
 
-![](https://github.com/rwdkor/RhythmSharp/blob/main/Images/Screenshot03.png?raw=true)
+![](https://github.com/rwdkor/RhythmSharp/blob/master/Images/Screenshot03.png?raw=true)
 
 
 ## [](https://github.com/rwdkor/RhythmSharp#the-pipeline)The Pipeline
@@ -122,7 +122,7 @@ The game provides  [search system](https://osu.ppy.sh/help/wiki/Interface#search
 In this section, we will see how to put these steps together to create a program that automatically farms pp.
 
 ### [](https://github.com/rwdkor/RhythmSharp#overview)Overview
-![](https://github.com/rwdkor/RhythmSharp/blob/main/Images/Pipeline.png?raw=true)
+![](https://github.com/rwdkor/RhythmSharp/blob/master/Images/Pipeline.png?raw=true)
 
 Each step of this pipeline will be thoroughly explained in the sections below. Also, the experimental results obtained during the development of this project will be presented.
 
@@ -131,19 +131,19 @@ Each step of this pipeline will be thoroughly explained in the sections below. A
 #### [](https://github.com/rwdkor/RhythmSharp#getting-the-time-offset)Getting the time offset
 I also read game's memory to get the time offset.
 
-![](https://github.com/rwdkor/RhythmSharp/blob/main/Images/Screenshot02.png?raw=true)
+![](https://github.com/rwdkor/RhythmSharp/blob/master/Images/Screenshot02.png?raw=true)
 
 
 Just scanned directly with Cheat Engine, and I found the function that manages time offset.
 
-![](https://github.com/rwdkor/RhythmSharp/blob/main/Images/Screenshot05.png?raw=true)
+![](https://github.com/rwdkor/RhythmSharp/blob/master/Images/Screenshot05.png?raw=true)
 
 
 #### [](https://github.com/rwdkor/RhythmSharp#getting-current-status-of-the-game)Getting current status of the game
 Before selecting a song, we need to know the game is ready to select song.
 I was struggled with only a simple scan, so I decided to decompile osu!
 
-![](https://github.com/rwdkor/RhythmSharp/blob/main/Images/Screenshot06.png?raw=true)
+![](https://github.com/rwdkor/RhythmSharp/blob/master/Images/Screenshot06.png?raw=true)
 
 
 Also I made a simple cheat engine script to check status.
@@ -185,7 +185,7 @@ Also I made a simple cheat engine script to check status.
 
 Results:
 
-![](https://github.com/rwdkor/RhythmSharp/blob/main/Images/Screenshot07.png?raw=true)
+![](https://github.com/rwdkor/RhythmSharp/blob/master/Images/Screenshot07.png?raw=true)
 
 
 ### [](https://github.com/rwdkor/RhythmSharp#select-beatmap)Select Beatmap
@@ -209,9 +209,9 @@ I used to open beatmap file directly, but there was exception like converted map
 
 So I decided to read game's memory and finally found array of 'HitObjects'.
 
-![](https://github.com/rwdkor/RhythmSharp/blob/main/Images/Screenshot04.png?raw=true)
+![](https://github.com/rwdkor/RhythmSharp/blob/master/Images/Screenshot04.png?raw=true)
 
-You can see more details on [source code](https://github.com/rwdkor/RhythmSharp/blob/main/RhythmSharp.Core/Offset.pas#L108).
+You can see more details on [source code](https://github.com/rwdkor/RhythmSharp/blob/master/RhythmSharp.Core/Offset.pas#L108).
 
 #### [](https://github.com/rwdkor/RhythmSharp#classify-and-humanize-notes)Classify and humanize notes
 Classifing notes is really easy. Look at below codes.
@@ -240,30 +240,30 @@ KeyManager[bData.HitObjects[i].Key].HitObjects.Add(HitObject);
 ```
 All notes have time pairs, TimeStart and TimeEnd. If TimeStart is less than TimeEnd, it is obviously long note.
 
-![](https://github.com/rwdkor/RhythmSharp/blob/main/Images/Screenshot10.png?raw=true)
+![](https://github.com/rwdkor/RhythmSharp/blob/master/Images/Screenshot10.png?raw=true)
 
 
 **Humanizer?**
 
 It was hard to humanize notes. At first, I tried to put a miss in a specific ratio, but the result was abnormal depending on the difficulty of the map.
 
-![](https://github.com/rwdkor/RhythmSharp/blob/main/Images/Screenshot09.png?raw=true)
+![](https://github.com/rwdkor/RhythmSharp/blob/master/Images/Screenshot09.png?raw=true)
 
 
-You can see old codes on [RoKo](https://github.com/rwdkor/RoKo/blob/main/pasMain.pas#L677) repo.
+You can see old codes on [RoKo](https://github.com/rwdkor/RoKo/blob/master/pasMain.pas#L677) repo.
 
 
 I changed the humanize method, humanizing notes by KPS(key per second). It looked more human-like by adjusting the ratio according to the KPS(=almost same as difficulty).
 
-![](https://github.com/rwdkor/RhythmSharp/blob/main/Images/Screenshot08.png?raw=true)
+![](https://github.com/rwdkor/RhythmSharp/blob/master/Images/Screenshot08.png?raw=true)
 
-[Here's the code!](https://github.com/rwdkor/RhythmSharp/blob/main/RhythmSharp.Core/Main.pas#L432) 
+[Here's the code!](https://github.com/rwdkor/RhythmSharp/blob/master/RhythmSharp.Core/Main.pas#L432) 
 
 But humanization is still not perfect, so it needs improvement!
 
 ### [](https://github.com/rwdkor/RhythmSharp#check-notes-hit-timing)Check note's hit-timing
 We need to compare current time and note's hit-timing to hit notes!
-Copy/Pasted the logic from [fs-c's github](https://github.com/fs-c/maniac/blob/main/src/maniac/maniac.cpp#L29), just i was too lazy to code myself.
+Copy/Pasted the logic from [fs-c's github](https://github.com/fs-c/maniac/blob/master/src/maniac/maniac.cpp#L29), just i was too lazy to code myself.
 
 ### [](https://github.com/rwdkor/RhythmSharp#send-keystrokes)Send Keystrokes
 We need to know what to press before sending a keystrokes. Usually, you can use the default key layout, but someone can change the key layout like 'Q-W-O-P'.
@@ -287,9 +287,9 @@ Finding custom key layout in memory was a bit complicated and painful, so I'm go
 ### [](https://github.com/rwdkor/RhythmSharp#result)Result
 Screenshot of RhythmSharp / Supports Korean and English. (since I'm Korean)
 
-![English](https://github.com/rwdkor/RhythmSharp/blob/main/Images/Screenshot11.png?raw=true)
+![English](https://github.com/rwdkor/RhythmSharp/blob/master/Images/Screenshot11.png?raw=true)
 
-![Korean](https://github.com/rwdkor/RhythmSharp/blob/main/Images/Screenshot12.png?raw=true)
+![Korean](https://github.com/rwdkor/RhythmSharp/blob/master/Images/Screenshot12.png?raw=true)
 
 
 ### [](https://github.com/rwdkor/RhythmSharp#possible-improvements)Possible Improvements
