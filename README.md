@@ -14,10 +14,13 @@
 
 **RhythmSharp(=R#) - Reworked version of** [**RoKo**](https://github.com/rwdkor/RoKo)­­
 
+Official Discord : [**Discord**](https://discord.gg/2sC9ER8)
+
 This project aims to automatically boost a account of osu!mania.
 R# provides many features like auto-playing bot with humanizer, tasks, scheduler, and etc... Additionally, the article below goes over all the details involved during the development of R#. Toward the end, it also considers possible improvements. Make sure to read it.
 
 > This project was created solely for research and educational purposes. The usage of this project for malicious purposes in-game is against peppy's terms of service.
+
 
 ## Thanks to
 - [@fs-c](https://github.com/fs-c) for his [bot logics](https://github.com/rwdkor/RhythmSharp#check-notes-hit-timing)
