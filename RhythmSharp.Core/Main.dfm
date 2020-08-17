@@ -95,10 +95,6 @@ object frmMain: TfrmMain
     TabOrder = 1
     object Tab_General: TTabSheet
       TabVisible = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         420
         281)
@@ -676,10 +672,6 @@ object frmMain: TfrmMain
     object Tab_Tasks: TTabSheet
       ImageIndex = 3
       TabVisible = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         420
         281)
@@ -763,10 +755,6 @@ object frmMain: TfrmMain
     object Tab_Scheduler: TTabSheet
       ImageIndex = 2
       TabVisible = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         420
         281)

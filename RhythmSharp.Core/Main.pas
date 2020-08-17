@@ -1341,6 +1341,23 @@ begin
       Label16.Caption := '일정에 맞게 봇이 이벤트를 실행합니다. 주로 작업과 같이 쓰입니다.';
       ListView_Schedules.Columns.Items[0].Caption := '시간';
       ListView_Schedules.Columns.Items[0].Caption := '이벤트';
+
+
+    //Menus
+    ReloadProfileList.Caption := '새로고침';
+    LoadProfile.Caption := '불러오기';
+    SaveProfileOverwrite.Caption := '저장(덮어쓰기)';
+    SaveProfileNew.Caption := '저장(신규)';
+    DeleteProfile.Caption := '삭제';
+
+    AddNew_S.Caption := '새 일정 추가';
+    EditItem_S.Caption := '수정';
+    DeleteItem_S.Caption := '삭제';
+
+    AddNew_S.Caption := '새 작업 추가';
+    EditItem_S.Caption := '수정';
+    DeleteItem_S.Caption := '삭제';
+
   end
   else if Combo_Language.ItemIndex = 1 then
   begin
@@ -1402,6 +1419,21 @@ begin
       Label16.Caption := 'The bot will run events on specific times. It is mainly used for tasks.';
       ListView_Schedules.Columns.Items[0].Caption := 'Time';
       ListView_Schedules.Columns.Items[1].Caption := 'Event';
+
+    //Menus
+    ReloadProfileList.Caption := 'Reload list';
+    LoadProfile.Caption := 'Load';
+    SaveProfileOverwrite.Caption := 'Save(Overwrite)';
+    SaveProfileNew.Caption := 'Save(New)';
+    DeleteProfile.Caption := 'Delete';
+
+    AddNew_S.Caption := 'Add new schedule';
+    EditItem_S.Caption := 'Edit';
+    DeleteItem_S.Caption := 'Delete';
+
+    AddNew_S.Caption := 'Add new tast';
+    EditItem_S.Caption := 'Edit';
+    DeleteItem_S.Caption := 'Delete';
   end;
 end;
 
