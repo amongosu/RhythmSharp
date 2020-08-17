@@ -50,7 +50,7 @@ const arr_7k : array[0..6] of byte = ($53, $44, $46, $20, $4A, $4B, $4C);
 const arr_8k : array[0..7] of byte = ($A0, $53, $44, $46, $20, $4A, $4B, $4C);
 const arr_9k : array[0..8] of byte = ($41, $53, $44, $46, $20, $4A, $4B, $4C, $BA);
 
-const arr_4k_fake : array[0..3] of byte = ($45, $52, $55, $49); //ERUI
+const arr_4k_fake : array[0..3] of byte = ($44, $46, $4A, $4B);//($45, $52, $55, $49); //ERUI
 const arr_5k_fake : array[0..4] of byte = ($44, $46, $20, $4A, $4B);
 const arr_6k_fake : array[0..5] of byte = ($53, $44, $46, $4A, $4B, $4C);
 const arr_7k_fake : array[0..6] of byte = ($53, $44, $46, $20, $4A, $4B, $4C);

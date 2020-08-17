@@ -89,12 +89,16 @@ object frmMain: TfrmMain
     Top = 31
     Width = 428
     Height = 291
-    ActivePage = Tab_General
+    ActivePage = Tab_Humanizer
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabHeight = 25
     TabOrder = 1
     object Tab_General: TTabSheet
       TabVisible = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         420
         281)
@@ -108,16 +112,18 @@ object frmMain: TfrmMain
         VertScrollBar.Tracking = True
         Anchors = [akLeft, akTop, akRight, akBottom]
         AutoScroll = False
+        Color = 15132390
+        ParentColor = False
         TabOrder = 0
         AniSet.AniKind = akOut
         AniSet.AniFunctionKind = afkCubic
         AniSet.DelayStartTime = 0
         AniSet.Duration = 120
         AniSet.Step = 10
-        BackColor.Enabled = False
-        BackColor.Color = clBlack
-        BackColor.LightColor = 15132390
-        BackColor.DarkColor = 2039583
+        CustomBackColor.Enabled = False
+        CustomBackColor.Color = 15132390
+        CustomBackColor.LightColor = 15132390
+        CustomBackColor.DarkColor = 2039583
         object Group_Debugging: TGroupBox
           Left = 3
           Top = 347
@@ -297,16 +303,18 @@ object frmMain: TfrmMain
         VertScrollBar.Tracking = True
         Anchors = [akLeft, akTop, akRight, akBottom]
         AutoScroll = False
+        Color = 15132390
+        ParentColor = False
         TabOrder = 0
         AniSet.AniKind = akOut
         AniSet.AniFunctionKind = afkCubic
         AniSet.DelayStartTime = 0
         AniSet.Duration = 120
         AniSet.Step = 10
-        BackColor.Enabled = False
-        BackColor.Color = clBlack
-        BackColor.LightColor = 15132390
-        BackColor.DarkColor = 2039583
+        CustomBackColor.Enabled = False
+        CustomBackColor.Color = 15132390
+        CustomBackColor.LightColor = 15132390
+        CustomBackColor.DarkColor = 2039583
         DesignSize = (
           397
           275)
@@ -655,7 +663,7 @@ object frmMain: TfrmMain
             Top = 127
             Width = 375
             Height = 25
-            Max = 100
+            Max = 300
             Position = 5
             PositionToolTip = ptBottom
             TabOrder = 9
@@ -668,6 +676,10 @@ object frmMain: TfrmMain
     object Tab_Tasks: TTabSheet
       ImageIndex = 3
       TabVisible = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         420
         281)
@@ -751,6 +763,10 @@ object frmMain: TfrmMain
     object Tab_Scheduler: TTabSheet
       ImageIndex = 2
       TabVisible = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         420
         281)

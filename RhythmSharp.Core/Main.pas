@@ -5,10 +5,9 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, DSiWin32, RoKo_Lib, System.Diagnostics, System.TimeSpan,
-  Vcl.ExtCtrls, System.Generics.Collections, System.Math, System.StrUtils, Offset, TaskEditor, ScheduleEditor,
+  Vcl.ExtCtrls, System.Generics.Collections, Generics.Defaults, System.Math, System.StrUtils, Offset, TaskEditor, ScheduleEditor,
   Vcl.ComCtrls, Vcl.Menus, IniFiles, Types, Misc, System.ImageList, Vcl.ImgList,
-  PngImageList, Vcl.Buttons, PngSpeedButton, PngBitBtn, UCL.TUScrollBox,
-  Vcl.Grids, Vcl.ValEdit;
+  Vcl.Buttons, Vcl.Grids, Vcl.ValEdit, UCL.ScrollBox;
 
 { Global Functions }
 procedure ParseBeatmapFromMemory();
@@ -256,6 +255,7 @@ begin
     frmMain.Check_Scheduler.Checked := ini.ReadBool('Scheduler', 'Scheduler', False);
     ListViewLoadFromString(frmMain.ListView_Schedules, ini.ReadString('Scheduler', 'SchedulerList', ''));
 
+    UpdateChangedPreset();
   finally
     ini.Free;
   end;
@@ -356,7 +356,7 @@ begin
       6:
         Result := arr_6k[key];
       7:
-        Result := arr_7k[key];
+        Result := arr_7k_fake[key];
       8:
         Result := arr_8k[key];
       9:
@@ -387,7 +387,7 @@ end;
 function KeyPressShort(keycode: Cardinal): Boolean;
 begin
   keybd_event(keycode, MapVirtualKey(keycode, 0), 0, 0);
-  Sleep(40 + RandomRange(-10, 55));
+  Sleep(20 + RandomRange(-10, 15));
   keybd_event(keycode, MapVirtualKey(keycode, 0), KEYEVENTF_KEYUP, 0);
 end;
 
@@ -409,7 +409,7 @@ begin
     begin
       keybd_event(keycode, MapVirtualKey(keycode, 0), 0, 0);
       if (frmMain.Check_Humanizer.Checked) then
-        Sleep(40 + RandomRange(-10, 55))
+        Sleep(40 + RandomRange(-10, 45))
       else
         Sleep(15);
       keybd_event(keycode, MapVirtualKey(keycode, 0), KEYEVENTF_KEYUP, 0);
@@ -440,14 +440,14 @@ begin
       if (RandomRange(1, 100) < frmMain.Track_Ratio_Kool.Position) then
       begin
         if (RandomRange(1, 100) > 10) then //10%
-          Result := RandomRange(-14, 15) + RandomRange(-8, 9) //Kool ~ 16.5
+          Result := RandomRange(-14, 15) + RandomRange(-4, 5) //Kool ~ 16.5
         else
-          Result := Floor(RandomRange(-45, 46) * (kps / frmMain.Track_Acc_300.Position)); //Cool ~ 38.5
+          Result := Floor(RandomRange(-38, 39) * (kps / frmMain.Track_Acc_300.Position)); //Cool ~ 38.5
       end
       else
       begin
         if (RandomRange(1, 100) > 5) then //5%
-          Result := RandomRange(-35, 36) + RandomRange(-11, 12) //Cool ~ 38.5
+          Result := RandomRange(-33, 34) + RandomRange(-10, 11) //Cool ~ 38.5
         else
           Result := RandomRange(-55, 56) + RandomRange(-5 - Floor(1.7 * kps), 6 + Floor(1.7 * kps)); //200~
       end;
@@ -469,7 +469,7 @@ begin
       end
       else
       begin
-        if RandomRange(1, 100) < 35 then
+        if RandomRange(1, 100) < 40 then
         begin
           Result := (RandomRange(101, 126) * IfThen(RandomRange(0, 2) = 1, -1, 1)) + RandomRange(-12, 13) //50 101.5 ~ 125.5ms
         end
@@ -589,10 +589,14 @@ begin
 
     try
       //pass useless hitpoints
-      if (CurrentOffset < $7FFFFFFF) and (CurrentOffset > 200) and (CurrentStatus = 2) then
+      if (CurrentOffset < $7FFFFFFF) and (CurrentOffset > 120) and (CurrentStatus = 2) then
       begin
-        if (HitObjects[cur_i].Timing < (CurrentOffset - 200)) and ((cur_i <> 0) or (HitObjects[0].Timing < CurrentOffset)) then
+        if (HitObjects[cur_i].Timing < (CurrentOffset - 120)) and ((cur_i <> 0) or (HitObjects[0].Timing < CurrentOffset)) then
         begin
+          if HitObjects[cur_i].Timing < (CurrentOffset - 120) then
+          begin
+            KeyInput(HitObjects[cur_i].Key, HitObjects[cur_i].NoteType);
+          end;
           cur_i := cur_i + 1;
           continue;
         end;
@@ -616,7 +620,13 @@ begin
           lastPressed := GetTickCount;
         end;
 
-        if (lastPressed + 250) < GetTickCount then
+        if HitObjects[cur_i].NoteType = 2 then
+        begin
+          if (lastPressed + 100) < GetTickCount then
+          KeyInput(HitObjects[cur_i].Key, 2);
+        end;
+
+        if (lastPressed + 150) < GetTickCount then
         begin
           continue;
         end;
@@ -626,17 +636,19 @@ begin
       begin
         KeyInput(HitObjects[cur_i].Key, HitObjects[cur_i].NoteType);
         cur_i := cur_i + 1;
-        lastPressed := 0;
+        //lastPressed := 0;
       end
-      else if (frmMain.Check_StreamKeyProof.Checked) and ((lastPressed + 100) > GetTickCount) and (Abs(HitObjects[cur_i].Timing - CurrentOffset) >= 450) and (HitObjects[cur_i].NoteType <> 2) then
+      else if (frmMain.Check_StreamKeyProof.Checked) and ((lastPressed + 150) > GetTickCount) and (Abs(HitObjects[cur_i].Timing - CurrentOffset) >= 450) and (HitObjects[cur_i].NoteType <> 2) then
       begin
         KeyInput(HitObjects[cur_i].Key, 0);
-        lastPressed := 0;
+        //lastPressed := 0;
       end;
     except
 
     end;
   end;
+
+  KeyInput(Key, 2);
 end;
 
 procedure MainThread.Execute;
@@ -1047,33 +1059,54 @@ begin
         continue;
       end;
     end;}
-
-    HumanizeVal := GetHumanizeValue(AverageKPS[i], 0);
-
-    if HumanizeVal < -110 then
+    if (frmMain.Check_Humanizer.Checked) then
     begin
-      if (frmMain.Check_Humanizer.Checked) then HitObject.Timing := HitObject.Timing + HumanizeVal
-      else HitObject.Timing := HitObject.Timing;
-      KeyManager[bData.HitObjects[i].Key].HitObjects.Add(HitObject);
+      HumanizeVal := GetHumanizeValue(AverageKPS[i], 0);
+      if HasMod(RulesetInfo_Base, Mods.DoubleTime) or HasMod(RulesetInfo_Base, Mods.Nightcore) then
+      begin
+        HumanizeVal := Floor(HumanizeVal * 1.15);
+      end
+      else if HasMod(RulesetInfo_Base, Mods.HalfTime) then
+      begin
+        HumanizeVal := Floor(HumanizeVal * 0.95);
+      end;
+      if HumanizeVal < -110 then
+      begin
+        HitObject.Timing := HitObject.Timing + HumanizeVal;
+        KeyManager[bData.HitObjects[i].Key].HitObjects.Add(HitObject);
 
-      HitObject.Timing := HitObject.Timing + RandomRange(30, 80);
-      KeyManager[bData.HitObjects[i].Key].HitObjects.Add(HitObject);
-    end
-    else if HumanizeVal > 110 then
-    begin
-      HitObject.Timing := HitObject.Timing + RandomRange(-80, -30);
-      KeyManager[bData.HitObjects[i].Key].HitObjects.Add(HitObject);
+        HitObject.Timing := HitObject.Timing + RandomRange(30, 80);
+        KeyManager[bData.HitObjects[i].Key].HitObjects.Add(HitObject);
+      end
+      else if HumanizeVal > 110 then
+      begin
+        HitObject.Timing := HitObject.Timing + RandomRange(-80, -30);
+        KeyManager[bData.HitObjects[i].Key].HitObjects.Add(HitObject);
 
-      if (frmMain.Check_Humanizer.Checked) then HitObject.Timing := HitObject.Timing + HumanizeVal
-      else HitObject.Timing := HitObject.Timing;
-      KeyManager[bData.HitObjects[i].Key].HitObjects.Add(HitObject);
+        HitObject.Timing := HitObject.Timing + HumanizeVal;
+        KeyManager[bData.HitObjects[i].Key].HitObjects.Add(HitObject);
+      end
+      else
+      begin
+        HitObject.Timing := HitObject.Timing + HumanizeVal;
+        KeyManager[bData.HitObjects[i].Key].HitObjects.Add(HitObject);
+      end;
     end
     else
     begin
-      if (frmMain.Check_Humanizer.Checked) then HitObject.Timing := HitObject.Timing + HumanizeVal
-      else HitObject.Timing := HitObject.Timing;
       KeyManager[bData.HitObjects[i].Key].HitObjects.Add(HitObject);
     end;
+  end;
+
+  //sort
+  for i := 0 to KeyManager.Count - 1 do
+  begin
+    KeyManager[i].HitObjects.Sort(
+      TComparer<HitObjectData>.Construct(
+      function(const Left, Right: HitObjectData): Integer
+      begin
+        Result := Left.Timing - Right.Timing;
+      end))
   end;
 
   //start thread
@@ -1148,78 +1181,78 @@ begin
   if frmMain.Combo_Preset.ItemIndex = 0 then //Level10
   begin
     frmMain.Track_Acc_300.Position := 40;
-    frmMain.Track_Ratio_Kool.Position := 90;
-    frmMain.Track_Ratio_Cool.Position := 10;
+    frmMain.Track_Ratio_Kool.Position := 65;
+    frmMain.Track_Ratio_Cool.Position := 35;
     frmMain.Track_Ratio_200.Position := 95;
-    frmMain.Track_Ratio_100.Position := 2;
-    frmMain.Track_Ratio_Miss.Position := 3;
+    frmMain.Track_Ratio_100.Position := 5;
+    frmMain.Track_Ratio_Miss.Position := 0;
   end;
 
   if frmMain.Combo_Preset.ItemIndex = 1 then //Level9
   begin
     frmMain.Track_Acc_300.Position := 30;
-    frmMain.Track_Ratio_Kool.Position := 87;
-    frmMain.Track_Ratio_Cool.Position := 13;
+    frmMain.Track_Ratio_Kool.Position := 60;
+    frmMain.Track_Ratio_Cool.Position := 40;
     frmMain.Track_Ratio_200.Position := 92;
-    frmMain.Track_Ratio_100.Position := 4;
-    frmMain.Track_Ratio_Miss.Position := 4;
+    frmMain.Track_Ratio_100.Position := 7;
+    frmMain.Track_Ratio_Miss.Position := 1;
   end;
 
   if frmMain.Combo_Preset.ItemIndex = 2 then //Level8
   begin
     frmMain.Track_Acc_300.Position := 25;
-    frmMain.Track_Ratio_Kool.Position := 85;
-    frmMain.Track_Ratio_Cool.Position := 15;
-    frmMain.Track_Ratio_200.Position := 88;
-    frmMain.Track_Ratio_100.Position := 5;
-    frmMain.Track_Ratio_Miss.Position := 7;
+    frmMain.Track_Ratio_Kool.Position := 60;
+    frmMain.Track_Ratio_Cool.Position := 40;
+    frmMain.Track_Ratio_200.Position := 91;
+    frmMain.Track_Ratio_100.Position := 8;
+    frmMain.Track_Ratio_Miss.Position := 1;
   end;
 
   if frmMain.Combo_Preset.ItemIndex = 3 then //Level7
   begin
     frmMain.Track_Acc_300.Position := 19;
-    frmMain.Track_Ratio_Kool.Position := 83;
-    frmMain.Track_Ratio_Cool.Position := 17;
+    frmMain.Track_Ratio_Kool.Position := 55;
+    frmMain.Track_Ratio_Cool.Position := 45;
     frmMain.Track_Ratio_200.Position := 86;
-    frmMain.Track_Ratio_100.Position := 6;
-    frmMain.Track_Ratio_Miss.Position := 8;
+    frmMain.Track_Ratio_100.Position := 11;
+    frmMain.Track_Ratio_Miss.Position := 3;
   end;
 
   if frmMain.Combo_Preset.ItemIndex = 4 then //Level6
   begin
     frmMain.Track_Acc_300.Position := 16;
-    frmMain.Track_Ratio_Kool.Position := 80;
-    frmMain.Track_Ratio_Cool.Position := 20;
-    frmMain.Track_Ratio_200.Position := 82;
-    frmMain.Track_Ratio_100.Position := 8;
-    frmMain.Track_Ratio_Miss.Position := 10;
+    frmMain.Track_Ratio_Kool.Position := 50;
+    frmMain.Track_Ratio_Cool.Position := 50;
+    frmMain.Track_Ratio_200.Position := 84;
+    frmMain.Track_Ratio_100.Position := 11;
+    frmMain.Track_Ratio_Miss.Position := 5;
   end;
 
   if frmMain.Combo_Preset.ItemIndex = 5 then //Level5
   begin
     frmMain.Track_Acc_300.Position := 15;
-    frmMain.Track_Ratio_Kool.Position := 75;
-    frmMain.Track_Ratio_Cool.Position := 25;
-    frmMain.Track_Ratio_200.Position := 79;
-    frmMain.Track_Ratio_100.Position := 7;
-    frmMain.Track_Ratio_Miss.Position := 14;
+    frmMain.Track_Ratio_Kool.Position := 45;
+    frmMain.Track_Ratio_Cool.Position := 55;
+    frmMain.Track_Ratio_200.Position := 83;
+    frmMain.Track_Ratio_100.Position := 10;
+    frmMain.Track_Ratio_Miss.Position := 7;
   end;
 
   if frmMain.Combo_Preset.ItemIndex = 6 then //Level4
   begin
     frmMain.Track_Acc_300.Position := 10;
-    frmMain.Track_Ratio_Kool.Position := 63;
-    frmMain.Track_Ratio_Cool.Position := 37;
-    frmMain.Track_Ratio_200.Position := 74;
-    frmMain.Track_Ratio_100.Position := 10;
-    frmMain.Track_Ratio_Miss.Position := 16;
+    frmMain.Track_Ratio_Kool.Position := 30;
+    frmMain.Track_Ratio_Cool.Position := 70;
+    frmMain.Track_Ratio_200.Position := 77;
+    frmMain.Track_Ratio_100.Position := 13;
+    frmMain.Track_Ratio_Miss.Position := 10;
   end;
 
   if frmMain.Combo_Preset.ItemIndex = 7 then //Level3
   begin
     frmMain.Track_Acc_300.Position := 6;
-    frmMain.Track_Ratio_Kool.Position := 50;
-    frmMain.Track_Ratio_Cool.Position := 50;
+    frmMain.Track_Ratio_Kool.Position := 30;
+    frmMain.Track_Ratio_Cool.Position := 70;
     frmMain.Track_Ratio_200.Position := 70;
     frmMain.Track_Ratio_100.Position := 11;
     frmMain.Track_Ratio_Miss.Position := 19;
@@ -1228,8 +1261,8 @@ begin
   if frmMain.Combo_Preset.ItemIndex = 8 then //Level2
   begin
     frmMain.Track_Acc_300.Position := 4;
-    frmMain.Track_Ratio_Kool.Position := 35;
-    frmMain.Track_Ratio_Cool.Position := 65;
+    frmMain.Track_Ratio_Kool.Position := 15;
+    frmMain.Track_Ratio_Cool.Position := 85;
     frmMain.Track_Ratio_200.Position := 60;
     frmMain.Track_Ratio_100.Position := 15;
     frmMain.Track_Ratio_Miss.Position := 25;
@@ -1238,11 +1271,11 @@ begin
   if frmMain.Combo_Preset.ItemIndex = 9 then //Level1
   begin
     frmMain.Track_Acc_300.Position := 2;
-    frmMain.Track_Ratio_Kool.Position := 20;
-    frmMain.Track_Ratio_Cool.Position := 80;
+    frmMain.Track_Ratio_Kool.Position := 10;
+    frmMain.Track_Ratio_Cool.Position := 90;
     frmMain.Track_Ratio_200.Position := 45;
-    frmMain.Track_Ratio_100.Position := 25;
-    frmMain.Track_Ratio_Miss.Position := 30;
+    frmMain.Track_Ratio_100.Position := 35;
+    frmMain.Track_Ratio_Miss.Position := 20;
   end;
 end;
 
